@@ -2,6 +2,15 @@
 pragma solidity ^0.8.13;
 
 contract VoteContract {
+    address internal owner;
+
+    constructor() {
+        owner = msg.sender;
+    }
+    modifier onlyOwner {
+        require(msg.sender == owner);
+        _;
+    }
     struct Candidate {
         string name;
         uint numberVotes;
@@ -14,7 +23,7 @@ contract VoteContract {
         candidates[_address].numberVotes++;
     }
 
-    function SetCandidate(address _address, string memory _name) public {
+    function SetCandidate(address _address, string memory _name) external onlyOwner {
         Candidate memory candidate;
 
         candidate.name = _name;
