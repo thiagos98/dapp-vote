@@ -21,6 +21,7 @@ contract VoteContract {
 
     mapping (address => Candidate) candidates;
     Candidate[] listCandidates;
+    address[] listAddressCandidates;
     
     function Vote(address _address) public {
         candidates[_address].numberVotes++;
@@ -32,7 +33,14 @@ contract VoteContract {
         }
     }
 
-    function SetCandidate(address _address, string memory _name) external onlyOwner {
+    function SetCandidate(address _address, string memory _name) external onlyOwner  {
+        // uint i;
+        // if(listAddressCandidates.length > 0) {
+        //     for(i = 0; i < listAddressCandidates.length; i++) {
+        //         require(_address != listAddressCandidates[i]);
+        //     }
+        // }
+        
         Candidate memory candidate;
 
         candidate.add = _address;
@@ -41,6 +49,7 @@ contract VoteContract {
     
         candidates[_address] = candidate;
         listCandidates.push(candidate);
+        listAddressCandidates.push(_address);
     }
 
     function GetCandidates() view public returns(Candidate[] memory) {
