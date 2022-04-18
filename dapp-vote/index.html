@@ -50,18 +50,17 @@
     <div class="row">
       <div class="col-md-12">
         <div class="candidate-list">
-          <h2 class="h2">Candidatos</h2>
+          <h2 class="h2">Coloque endereço do seu candidato</h2>
           <div class="candidate-list-container">
             <div class="candidate-list-item">
-              <input type="radio" id="candidate" value="0x0" />
-              <label for="candidate">Candidate 1</label>
+              <input type="text" id="candidate" value="" />
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="row">
+    <div style="margin-top: 30px" class="row">
       <div class="col-md-12">
         <div class="vote-button">
           <button id="Vote" class="btn btn-primary" type="submit">Vote</button>
@@ -70,12 +69,17 @@
     </div>
     <hr />
 
+    <!-- make a table with address and number of votes-->
     <div class="row">
       <div class="col-md-12">
         <div class="result">
           <h2 class="h2">Candidatos Votados</h2>
           <div class="result-container">
-            <span><i id="GetCandidates"></i></span>
+            <div class="result-list-name">
+              <span>
+                <i id="GetCandidates"></i>
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -90,19 +94,19 @@
 
             <span>
               Endereço:
-              <input id="value" type="text" class="form-control" value="" />
+              <input id="addressCandidate" type="text" class="form-control" value="" />
             </span>
             <br />
             <span>
               Nome do Candidato(a):
-              <input id="value" type="text" class="form-control" value="" />
+              <input id="nameCandidate" type="text" class="form-control" value="" />
             </span>
           </form>
         </div>
       </div>
     </div>
 
-    <div style="margin-top: 30px" class="row">
+    <div style="margin: 30px 30px" class="row">
       <div class="col-md-12">
         <div class="register-button">
           <button id="SetCandidate" class="btn btn-primary" type="submit">Registrar</button>
@@ -113,40 +117,12 @@
 
   <script>
     let currentAccount = null;
-    let web3 = require('web3');
-    let contractAddress = "0x2e357b7994F5C7a6A207f94C8DB2BF0A91563B4A";
+    let web3;
+    let contractAddress = "0x6ad24Ef810E7a694C0b1D99638F7EFc3A7f9266c";
     let abi = [{
-        "inputs": [{
-            "internalType": "address",
-            "name": "_address",
-            "type": "address"
-          },
-          {
-            "internalType": "string",
-            "name": "_name",
-            "type": "string"
-          }
-        ],
-        "name": "SetCandidate",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
         "inputs": [],
         "stateMutability": "nonpayable",
         "type": "constructor"
-      },
-      {
-        "inputs": [{
-          "internalType": "address",
-          "name": "_address",
-          "type": "address"
-        }],
-        "name": "Vote",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
       },
       {
         "inputs": [{
@@ -173,11 +149,44 @@
         "inputs": [],
         "name": "GetCandidates",
         "outputs": [{
-          "internalType": "address[]",
+          "components": [{
+              "internalType": "address",
+              "name": "add",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "numberVotes",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct VoteContract.Candidate[]",
           "name": "",
-          "type": "address[]"
+          "type": "tuple[]"
         }],
         "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [{
+            "internalType": "address",
+            "name": "_address",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "_name",
+            "type": "string"
+          }
+        ],
+        "name": "SetCandidate",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
       },
       {
@@ -189,6 +198,17 @@
           "type": "uint256"
         }],
         "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [{
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }],
+        "name": "Vote",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
       }
     ]
@@ -206,9 +226,10 @@
 
         if (currentAccount != null) {
           $('#enableMetamask').html(currentAccount).remove('btn-primary');
+          $('#enableMetamask').attr('disabled', true);
         }
       }
-
+      GetCandidates();
       console.log('Endereco da conta corrente = ' + currentAccount);
     }
 
@@ -231,12 +252,96 @@
     }
 
     function detectMetamask() {
-      if(typeof windows.ethereum !== 'undefined') {
+      if (typeof window.ethereum !== 'undefined') {
         return true;
       } else {
         return false
       }
     }
+
+    async function vote() {
+      let candidateAddress = $('#candidate').val();
+      if (candidateAddress) {
+        let contract = new web3.eth.Contract(abi, contractAddress);
+
+        contract.methods.Vote(candidateAddress).send({
+          from: currentAccount
+        }).then(function (result) {
+          alert("Voto computado com sucesso!");
+          GetCandidates();
+          $('#candidate').val('');
+        });
+      }
+    }
+    // add i elements with iteration in jquery
+    async function GetCandidates() {
+      let contract = new web3.eth.Contract(abi, contractAddress);
+
+      contract.methods.GetCandidates()
+        .call()
+        .then(function (result) {
+          $('#GetCandidates').html('');
+          $.each(result, function (index, value) {
+            
+            
+            $('#GetCandidates').append(
+              '<tr>' +
+              '<td>Address: ' + value.add + ', </td>' +
+              '<td>Name: ' + value.name + ', </td>' +
+              '<td>Number Votes:' + value.numberVotes + '</td>' +
+              '</tr>'
+            );
+            $('#GetCandidates').append('<br>');
+          });
+        });
+    }
+
+    async function SetCandidate() {
+      let candidateAddress = $('#addressCandidate').val();
+      let candidateName = $('#nameCandidate').val();
+
+      if (candidateAddress && candidateName) {
+        let contract = new web3.eth.Contract(abi, contractAddress);
+
+        contract.methods.SetCandidate(candidateAddress, candidateName).send({
+          from: currentAccount
+        }).then(function (result) {
+          alert("Candidato registrado com sucesso!");
+          GetCandidates();
+          $('#addressCandidate').val('');
+          $('#nameCandidate').val('');
+        });
+      }
+    }
+  </script>
+
+  <script>
+    $(document).ready(function () {
+
+      m = detectMetamask();
+      if (m) {
+        $('#metaicon').removeClass('meta-gray');
+        $('#metaicon').addClass('meta-normal');
+        $('#enableMetamask').attr('disabled', false);
+
+        web3 = new Web3(window.ethereum);
+      } else {
+        $('#metaicon').removeClass('meta-normal');
+        $('#metaicon').addClass('meta-gray');
+        $('#enableMetamask').attr('disabled', true);
+        web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
+      }
+    });
+
+    $('#enableMetamask').click(function () {
+      connect();
+    });
+    $('#Vote').click(function () {
+      vote();
+    });
+    $('#SetCandidate').click(function () {
+      SetCandidate();
+    });
   </script>
 </body>
 

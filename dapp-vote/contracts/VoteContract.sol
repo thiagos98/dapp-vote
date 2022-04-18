@@ -7,33 +7,43 @@ contract VoteContract {
     constructor() {
         owner = msg.sender;
     }
+
     modifier onlyOwner {
         require(msg.sender == owner);
         _;
     }
+    
     struct Candidate {
+        address add;
         string name;
         uint numberVotes;
     }
 
     mapping (address => Candidate) candidates;
-    address[] listCandidates;
+    Candidate[] listCandidates;
     
     function Vote(address _address) public {
         candidates[_address].numberVotes++;
+        uint i;
+        for(i = 0; i < listCandidates.length; i++) {
+            if(_address == listCandidates[i].add) {
+                listCandidates[i].numberVotes++;
+            }
+        }
     }
 
     function SetCandidate(address _address, string memory _name) external onlyOwner {
         Candidate memory candidate;
 
+        candidate.add = _address;
         candidate.name = _name;
         candidate.numberVotes = 0;
-
+    
         candidates[_address] = candidate;
-        listCandidates.push(_address);
+        listCandidates.push(candidate);
     }
 
-    function GetCandidates() view public returns(address[] memory) {
+    function GetCandidates() view public returns(Candidate[] memory) {
         return listCandidates;
     }
 
