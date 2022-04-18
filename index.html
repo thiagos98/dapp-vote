@@ -6,13 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/3.0.0-rc.5/web3.min.js"></script> -->
-  <script type="text/javascript" src="node_modules/web3/dist/web3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/3.0.0-rc.5/web3.min.js"></script>
+  <!-- <script type="text/javascript" src="node_modules/web3/dist/web3.min.js"></script> -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <title>Dapp para Votação</title>
 </head>
-
-<!-- centralize div using bootstrap -->
 
 <body>
   <style>
@@ -69,7 +67,6 @@
     </div>
     <hr />
 
-    <!-- make a table with address and number of votes-->
     <div class="row">
       <div class="col-md-12">
         <div class="result">
@@ -118,112 +115,115 @@
   <script>
     let currentAccount = null;
     let web3;
-    let contractAddress = "0xA52fAfa387171C260b3860dF2D19e08939b825D4";
+    // notebook avell
+    // let contractAddress = "0xA52fAfa387171C260b3860dF2D19e08939b825D4";
+    // notebook samsung
+    let contractAddress = "0xa27B051E46A9303b3fD337BCd15191Dd5338E251";
     let abi = [
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_address",
-				"type": "address"
-			}
-		],
-		"name": "GetCandidate",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "numberVotes",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "GetCandidates",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "address",
-						"name": "add",
-						"type": "address"
-					},
-					{
-						"internalType": "string",
-						"name": "name",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "numberVotes",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct VoteContract.Candidate[]",
-				"name": "",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_address",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "_name",
-				"type": "string"
-			}
-		],
-		"name": "SetCandidate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "TotalCandidates",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_address",
-				"type": "address"
-			}
-		],
-		"name": "Vote",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	}
-]
+      {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "_address",
+            "type": "address"
+          }
+        ],
+        "name": "GetCandidate",
+        "outputs": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "numberVotes",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "GetCandidates",
+        "outputs": [
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "add",
+                "type": "address"
+              },
+              {
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "internalType": "uint256",
+                "name": "numberVotes",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct VoteContract.Candidate[]",
+            "name": "",
+            "type": "tuple[]"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "_address",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "_name",
+            "type": "string"
+          }
+        ],
+        "name": "SetCandidate",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "TotalCandidates",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "_address",
+            "type": "address"
+          }
+        ],
+        "name": "Vote",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }
+    ]
 
     function handleAccountsChanged(accounts) {
       console.log('Calling Handle Changed');
@@ -285,7 +285,7 @@
         });
       }
     }
-    // add i elements with iteration in jquery
+    
     async function GetCandidates() {
       let contract = new web3.eth.Contract(abi, contractAddress);
 
@@ -294,8 +294,8 @@
         .then(function (result) {
           $('#GetCandidates').html('');
           $.each(result, function (index, value) {
-            
-            
+
+
             $('#GetCandidates').append(
               '<tr>' +
               '<td>Endereço: ' + value.add + ', </td>' +
