@@ -118,100 +118,112 @@
   <script>
     let currentAccount = null;
     let web3;
-    let contractAddress = "0x6ad24Ef810E7a694C0b1D99638F7EFc3A7f9266c";
-    let abi = [{
-        "inputs": [],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-      },
-      {
-        "inputs": [{
-          "internalType": "address",
-          "name": "_address",
-          "type": "address"
-        }],
-        "name": "GetCandidate",
-        "outputs": [{
-            "internalType": "string",
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "internalType": "uint256",
-            "name": "numberVotes",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [],
-        "name": "GetCandidates",
-        "outputs": [{
-          "components": [{
-              "internalType": "address",
-              "name": "add",
-              "type": "address"
-            },
-            {
-              "internalType": "string",
-              "name": "name",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "numberVotes",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct VoteContract.Candidate[]",
-          "name": "",
-          "type": "tuple[]"
-        }],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [{
-            "internalType": "address",
-            "name": "_address",
-            "type": "address"
-          },
-          {
-            "internalType": "string",
-            "name": "_name",
-            "type": "string"
-          }
-        ],
-        "name": "SetCandidate",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [],
-        "name": "TotalCandidates",
-        "outputs": [{
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [{
-          "internalType": "address",
-          "name": "_address",
-          "type": "address"
-        }],
-        "name": "Vote",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      }
-    ]
+    let contractAddress = "0xA52fAfa387171C260b3860dF2D19e08939b825D4";
+    let abi = [
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_address",
+				"type": "address"
+			}
+		],
+		"name": "GetCandidate",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "numberVotes",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "GetCandidates",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "add",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "numberVotes",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct VoteContract.Candidate[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_address",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			}
+		],
+		"name": "SetCandidate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "TotalCandidates",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_address",
+				"type": "address"
+			}
+		],
+		"name": "Vote",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]
 
     function handleAccountsChanged(accounts) {
       console.log('Calling Handle Changed');
