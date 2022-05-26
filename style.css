@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Righteous&family=Sarala:wght@400;700&display=swap');
+
+/* 
+font-family: 'Righteous', cursive;
+font-family: 'Sarala', sans-serif; 
+*/
+
+/* 
+* reset css
+*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+body {
+    font-size: 100%;
+    background: linear-gradient(107.05deg, #DDDDDD -0.48%, rgba(53, 53, 53, 0.81) 73.69%, rgba(254, 254, 254, 0.814948) 99.09%);
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.header-titulo {
+    font-family: 'Righteous';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 60px;
+
+    color: #FFFFFF;
+}
+
+.enable-metamask {
+    padding-top: 36px;
+    display: block;
+    margin: 0 auto;
+}
+
+.header-nav {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+}
+
+.header-nav-item {
+    font-family: 'Righteous';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 40px;
+
+    color: #FFFFFF;
+}
+
+.conteudo-principal {
+    display: flex;
+    flex-direction: column;
+}
+
+.titulo-form {
+    font-family: 'Sarala';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 39px;
+    color: #FFFFFF;
+}
+
+.cadastro-senha {
+    display: block;
+    margin: 0 auto;
+    padding-top: 32px;
+
+}
+
+
+.buscar-senha {
+    padding-top: 32px;
+    display: block;
+    margin: 0 auto;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input {
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    border-radius: 37px;
+    background: #FFFFFF;
+    border: 2px solid #000000;
+    box-sizing: border-box;
+    font-family: 'Sarala';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+
+    color: #000000;
+    margin-bottom: 24px;
+}
+
+.result-list {
+    font-family: 'Righteous';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 40px;
+
+    color: #FFFFFF;
+}
+
+.botao {
+    font-family: 'Sarala';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 24px;
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+
+    border: 2px solid #000000;
+    
+    border-radius: 6px; 
+}

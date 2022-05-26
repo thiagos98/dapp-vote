@@ -2,359 +2,218 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/3.0.0-rc.5/web3.min.js"></script>
-  <!-- <script type="text/javascript" src="node_modules/web3/dist/web3.min.js"></script> -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <title>Dapp para Votação</title>
+  <script src="https://cdn.jsdelivr.net/npm/ipfs-core/dist/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ipfs-core/dist/index.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+  <title>Dapp Text Files Storage</title>
 </head>
 
 <body>
-  <style>
-    .meta-gray {
-      -webkit-filter: grayscale(1);
-    }
+  <header class="header">
+    <h1 class="header-titulo">Dapp Text Files Storage</h1>
+    <!--         
+        <nav class="header-nav">
+            <a class="header-nav-item">Cadastro</a>
+            <a class="header-nav-item">Senhas</a>
+        </nav>
+        -->
+  </header>
 
-    .meta-normal {
-      -webkit-filter: grayscale(0);
-    }
-  </style>
-
-  <div class="container text-center">
-    <div class="row">
-      <div class="col-md-12">
-        <h1 class="h1">Dapp Votação</h1>
-      </div>
+  <main class="conteudo-principal">
+    <div class="enable-metamask">
+      <button type="submit" class="botao" id="enableMetamask">
+        Conectar a Metamask
+      </button>
     </div>
 
-    <div class="row">
-      <div class="col-md-12">
-        <button id="enableMetamask" class="btn btn-primary" type="submit">
-          Conectar a Metamask
-        </button>
-      </div>
+    <div>
+      <input type="file" name="uploadFile" id="uploadFile">
+      <button type="submit" class="botao" id="storeData">
+        Upload
+      </button>
+
+      Aqui esta o identificador unico do seu arquivo <span id="showCID"></span>
     </div>
-
-    <div class="row">
-      <div class="col-md-12">
-        <span id="status"></span>
-      </div>
+    <hr>
+    <div>
+      <h2>Buscar CID</h2>
+      <input type="text" name="cid" id="cid">
+      <button type="submit" class="botao" id="buscarCid">Buscar CID</button>
+      <span id="showFile"></span>
     </div>
-    <hr />
-
-    <div class="row">
-      <div class="col-md-12">
-        <div class="candidate-list">
-          <h2 class="h2">Coloque endereço do seu candidato</h2>
-          <div class="candidate-list-container">
-            <div class="candidate-list-item">
-              <input type="text" id="candidate" value="" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div style="margin-top: 30px" class="row">
-      <div class="col-md-12">
-        <div class="vote-button">
-          <button id="Vote" class="btn btn-primary" type="submit">Vote</button>
-        </div>
-      </div>
-    </div>
-    <hr />
-
-    <div class="row">
-      <div class="col-md-12">
-        <div class="result">
-          <h2 class="h2">Candidatos Votados</h2>
-          <div class="result-container">
-            <div class="result-list-name">
-              <span>
-                <i id="GetCandidates"></i>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <hr />
-
-    <div class="row">
-      <div class="col-md-12">
-        <div class="panelRegister">
-          <form>
-            <h2 class="h2">Inserir candidato na lista</h2>
-
-            <span>
-              Endereço:
-              <input id="addressCandidate" type="text" class="form-control" value="" />
-            </span>
-            <br />
-            <span>
-              Nome do Candidato(a):
-              <input id="nameCandidate" type="text" class="form-control" value="" />
-            </span>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <div style="margin: 30px 30px" class="row">
-      <div class="col-md-12">
-        <div class="register-button">
-          <button id="SetCandidate" class="btn btn-primary" type="submit">Registrar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  </main>
   <script>
     let currentAccount = null;
     let web3;
-    // notebook avell
-    // let contractAddress = "0xA52fAfa387171C260b3860dF2D19e08939b825D4";
-    // notebook samsung
-    let contractAddress = "0xa27B051E46A9303b3fD337BCd15191Dd5338E251";
+    let contractAddress = "0xC96ffDfcb457028A58d39E4AA53a1F58d07b7B65";
     let abi = [
       {
-        "inputs": [],
+        "inputs": [
+          {
+            "internalType": "string",
+            "name": "_cidIpfs",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "_fileName",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "_fileType",
+            "type": "string"
+          }
+        ],
+        "name": "storeData",
+        "outputs": [],
         "stateMutability": "nonpayable",
-        "type": "constructor"
+        "type": "function"
       },
       {
         "inputs": [
           {
-            "internalType": "address",
-            "name": "_address",
-            "type": "address"
-          }
-        ],
-        "name": "GetCandidate",
-        "outputs": [
-          {
             "internalType": "string",
-            "name": "name",
+            "name": "_cid",
             "type": "string"
-          },
-          {
-            "internalType": "uint256",
-            "name": "numberVotes",
-            "type": "uint256"
           }
         ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [],
-        "name": "GetCandidates",
+        "name": "getData",
         "outputs": [
           {
             "components": [
               {
-                "internalType": "address",
-                "name": "add",
-                "type": "address"
-              },
-              {
                 "internalType": "string",
-                "name": "name",
+                "name": "fileName",
                 "type": "string"
               },
               {
-                "internalType": "uint256",
-                "name": "numberVotes",
-                "type": "uint256"
+                "internalType": "string",
+                "name": "fileType",
+                "type": "string"
               }
             ],
-            "internalType": "struct VoteContract.Candidate[]",
+            "internalType": "struct SlowStorage.Data",
             "name": "",
-            "type": "tuple[]"
+            "type": "tuple"
           }
         ],
         "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "_address",
-            "type": "address"
-          },
-          {
-            "internalType": "string",
-            "name": "_name",
-            "type": "string"
-          }
-        ],
-        "name": "SetCandidate",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [],
-        "name": "TotalCandidates",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "_address",
-            "type": "address"
-          }
-        ],
-        "name": "Vote",
-        "outputs": [],
-        "stateMutability": "nonpayable",
         "type": "function"
       }
     ]
-
+    const node = async () => {
+      const instace = await window.IpfsCore.create();
+      return instace;
+    }
+    
     function handleAccountsChanged(accounts) {
-      console.log('Calling Handle Changed');
+        console.log('Calling Handle Changed');
 
-      if (accounts.length === 0) {
+        if (accounts.length === 0) {
         console.log('Please connect to metamask');
         $('#enableMetamask').html('Conectar ao metamask');
-      } else if (accounts[0] !== currentAccount) {
+        } else if (accounts[0] !== currentAccount) {
         currentAccount = accounts[0];
         $('#enableMetamask').html(currentAccount);
         $('status').html('');
 
         if (currentAccount != null) {
-          $('#enableMetamask').html(currentAccount).remove('btn-primary');
-          $('#enableMetamask').attr('disabled', true);
+            $('#enableMetamask').html(currentAccount).remove('btn-primary');
+            $('#enableMetamask').attr('disabled', true);
         }
-      }
-      GetCandidates();
-      console.log('Endereco da conta corrente = ' + currentAccount);
+        }
+        console.log('Endereco da conta corrente = ' + currentAccount);
     }
 
     function connect() {
-      console.log('Calling Connect()');
+        console.log('Calling Connect()');
 
-      ethereum
+        ethereum
         .request({
-          method: 'eth_requestAccounts'
+            method: 'eth_requestAccounts'
         })
         .then(handleAccountsChanged)
         .catch((err) => {
-          if (err.code === 4001) {
+            if (err.code === 4001) {
             console.log('Please connect to metamask');
             $('#status').html('Você recusou conectar ao metamask')
-          } else {
+            } else {
             console.log(err);
-          }
+            }
         });
     }
 
     function detectMetamask() {
-      if (typeof window.ethereum !== 'undefined') {
+        if (typeof window.ethereum !== 'undefined') {
         return true;
-      } else {
+        } else {
         return false
-      }
+        }
+    }
+    async function uploadFile() {
+          const input = document.querySelector('input');
+          const cid = await node.add(input.files[0]);
+
+          let contract = new web3.eth.Contract(abi, contractAddress);
+          await contract.methods.storeData(cid.path, input.files[0].name, input.files[0].type).send({ from: currentAccount });
+
+          $('#showCID').html(cid.path);
     }
 
-    async function vote() {
-      let candidateAddress = $('#candidate').val();
-      if (candidateAddress) {
-        let contract = new web3.eth.Contract(abi, contractAddress);
-
-        contract.methods.Vote(candidateAddress).send({
-          from: currentAccount
-        }).then(function (result) {
-          alert("Voto computado com sucesso!");
-          GetCandidates();
-          $('#candidate').val('');
-        });
-      }
-    }
-    
-    async function GetCandidates() {
+    async function showFile() {
+      
+      let cidValue = $('#cid').val();
       let contract = new web3.eth.Contract(abi, contractAddress);
+      let cids = await contract.methods.getData(cidValue).call();
+      console.log(cids);
 
-      contract.methods.GetCandidates()
-        .call()
-        .then(function (result) {
-          $('#GetCandidates').html('');
-          $.each(result, function (index, value) {
+      const stream = await node.cat(cidValue)
+      let data = ''
 
-
-            $('#GetCandidates').append(
-              '<tr>' +
-              '<td>Endereço: ' + value.add + ', </td>' +
-              '<td>Nome: ' + value.name + ', </td>' +
-              '<td>Número de Votos:' + value.numberVotes + '</td>' +
-              '</tr>'
-            );
-            $('#GetCandidates').append('<br>');
-          });
-        });
-    }
-
-    async function SetCandidate() {
-      let candidateAddress = $('#addressCandidate').val();
-      let candidateName = $('#nameCandidate').val();
-
-      if (candidateAddress && candidateName) {
-        let contract = new web3.eth.Contract(abi, contractAddress);
-
-        contract.methods.SetCandidate(candidateAddress, candidateName).send({
-          from: currentAccount
-        }).then(function (result) {
-          alert("Candidato registrado com sucesso!");
-          GetCandidates();
-          $('#addressCandidate').val('');
-          $('#nameCandidate').val('');
-        });
+      for await (const chunk of stream) {
+        // chunks of data are returned as a Buffer, convert it back to a string
+        data += chunk.toString()
       }
+      $('#showCID').html(data);
     }
-  </script>
 
-  <script>
+    
     $(document).ready(function () {
 
-      m = detectMetamask();
-      if (m) {
+        m = detectMetamask();
+        if (m) {
         $('#metaicon').removeClass('meta-gray');
         $('#metaicon').addClass('meta-normal');
         $('#enableMetamask').attr('disabled', false);
 
         web3 = new Web3(window.ethereum);
-      } else {
+        } else {
         $('#metaicon').removeClass('meta-normal');
         $('#metaicon').addClass('meta-gray');
         $('#enableMetamask').attr('disabled', true);
         web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
-      }
+        }
     });
 
     $('#enableMetamask').click(function () {
       connect();
     });
-    $('#Vote').click(function () {
-      vote();
+    $('#storeData').click(function () {
+      uploadFile();
     });
-    $('#SetCandidate').click(function () {
-      SetCandidate();
+    $('#buscarCid').click(function () {
+      showFile();
     });
   </script>
+
 </body>
 
 </html>
